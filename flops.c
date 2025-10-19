@@ -1,25 +1,25 @@
 #include <stdio.h>
-#include <stdlib.h>
-#include <time.h>
+#include <omp.h>
 
 int main() {
-    const long long num_operations = 1000000000;
+    double start_time, end_time;
     double a = 1.5, b = 2.5, c;
-    
-    clock_t start = clock();
+    long long int iterations = 1000000000; // 1 billion
+    int i;
 
-    for (long long i = 0; i < num_operations; i++) {
-        c = a * b + a; // 2 floating-point operations
+    start_time = omp_get_wtime();
+
+    for(i = 0; i < iterations; i++) {
+        c = a * b + a / b;  // 2 floating point operations
     }
 
-    clock_t end = clock();
-    double time_taken = (double)(end - start) / CLOCKS_PER_SEC;
+    end_time = omp_get_wtime();
 
-    double flops = (2.0 * num_operations) / time_taken;
+    double total_time = end_time - start_time;
+    double flops = (2.0 * iterations) / total_time;
 
-    printf("Time taken: %f seconds\n", time_taken);
-    printf("Estimated FLOPS: %f\n", flops);
+    printf("Time taken: %f seconds\n", total_time);
+    printf("Estimated FLOPS: %.2f MFLOPS\n", flops / 1e6);
 
     return 0;
 }
-
